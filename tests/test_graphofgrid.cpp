@@ -41,6 +41,13 @@
 #include <opm/input/eclipse/Schedule/Well/WellConnections.hpp>
 #include <opm/input/eclipse/Schedule/Well/Well.hpp>
 
+#if defined(HAVE_DUNE_ISTL) && HAVE_MPI
+        using AttributeSet = Dune::OwnerOverlapCopyAttributeSet::AttributeSet;
+#else
+        /// \brief The type of the set of the attributes
+        enum AttributeSet{owner, overlap, copy};
+#endif
+
 // basic test to check if the graph was constructed correctly
 BOOST_AUTO_TEST_CASE(SimpleGraph)
 {
@@ -473,7 +480,6 @@ BOOST_AUTO_TEST_CASE(ImportExportListExpansion)
     // mock import and export lists
     using importTuple = std::tuple<int,int,char,int>;
     using exportTuple = std::tuple<int,int,char>;
-    using AttributeSet = Dune::cpgrid::CpGridData::AttributeSet;
 
     std::vector<importTuple> imp(3);
     imp[0] = std::make_tuple(0,1,AttributeSet::owner,1);
